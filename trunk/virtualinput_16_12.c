@@ -1,23 +1,26 @@
-/*virtualinput aggiornato 15/12/2010 */ 
+/*virtualinput aggiornato 16/12/2010 */ 
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
+#include <float.h>
 
 #define NUM_OF_COLUMNS 3
 #define NUM_OF_ROWS 4
-#define NUM_OF_BUTTONS 12
+#define NUM_OF_BUTTONS 15
 #define NameProgramm "virtualKey"
 #define LENB 5  /*LENB=LENB2,LENB3,LENB4,LENB6,LENB7,LENB8,LENB9*/
 #define LENB1 8
 #define LENB5 4
-#define LENB10 19
+#define LENB10 20
 
 typedef struct Tlbutton{
  int len;
  int status;
  int *simbol;
+ time_t timeSelected;
 }lbutton;
 
 typedef struct tstruttura{
@@ -25,6 +28,7 @@ typedef struct tstruttura{
  Window win;
  Window winRoot;
  lbutton listButton[11];//listButton[9] non viene utilizza /viene posta a null per semplificazioni
+ int indexSimbol;/*rappresenta l'indice del listButton(generico) corrispondente all'ultimo carattere stampato*/  
 }struttura;
  
  
@@ -42,12 +46,16 @@ void fButton9(struttura *str);
 void fButton10(struttura *str);
 void fButton11(struttura *str);
 void fButton12(struttura *str);
+void fButton13(struttura *str);
+void fButton14(struttura *str);
+void fButton15(struttura *str);
+
 void sendKey(Display *display, Window &win, Window &winRoot,int keycode,int state);
 void SendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
 
 typedef void(*funz)(struttura *);
 Status sendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
-funz listF_Buttons[12]={fButton1,fButton2,fButton3,fButton4,fButton5,fButton6,fButton7,fButton8,fButton9,fButton10,fButton11,fButton12};
+funz listF_Buttons[15]={fButton1,fButton2,fButton3,fButton4,fButton5,fButton6,fButton7,fButton8,fButton9,fButton10,fButton11,fButton12,fButton13,fButton14,fButton15};
 
 //int mappaChar[10][15]={,'"','\','/','(',')','?','^','-','+','*','#',
 
@@ -125,10 +133,13 @@ void fButton9(struttura *str)
 }
 
 void fButton10(struttura *str)
-/*Funzione associata al tasto '*' */
+/*Funzione associata al tasto shift => setta lo shift */
 {
-  
-sendKey(str->display,str->win,str->winRoot,'a',0);
+  int modifier;
+ 	if(modifier==1)
+		modifier=0;
+	else
+		modifier=1;
 }
 
 void fButton11(struttura *str)
@@ -142,17 +153,27 @@ void fButton11(struttura *str)
 void fButton12(struttura *str)
 /*Funzione associata al tasto '#' */
 {
- /*for(int i=0;i<11;i++){ 
-  for(int j=0;j<str->listButton[i].len;j++)
-     printf("%c",str->listButton[i].simbol[j]);
-   printf("\n");
-   if (i==8)
-     i++;
-}*/
  int keycode=XK_Left;
  sendKey(str->display,str->win,str->winRoot,keycode,0); 
  //printf("12\n");
 }
+
+void fButton13(struttura *str)
+/*Funzione associata al tasto delete */
+{
+ sendKey(str->display,str->win,str->winRoot,XK_BackSpace,0);
+}
+void fButton14(struttura *str)
+/*Funzione associata al tasto '*' */
+{
+  sendKey(str->display,str->win,str->winRoot,'a',0);
+}
+void fButton15(struttura *str)
+/*Funzione associata al tasto invio */
+{
+  sendKey(str->display,str->win,str->winRoot,XK_KP_Enter,0);
+}
+
 
 /*funzione che notifica pressione e rilascio si un dato tasto ad un'applicazione*/
 void sendKey(Display *display, Window &win, Window &winRoot,int keycode,int state)
@@ -174,13 +195,13 @@ void SendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int 
   fprintf(stderr,"error : programm %s ,function createKeyEvent(..) return BadWindow\n",NameProgramm); 
   exit (1);
  }
+ XFlush(display);//forza l'effettiva scrittura degli eventuali dati presenti nel buffer,in questo caso il display 
 }
 
 // Function to create and send a keyboard event
 Status sendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers)
 {
    XKeyEvent event;
-
    event.display     = display;
    event.window      = win;
    event.root        = winRoot;
@@ -198,24 +219,40 @@ Status sendKeyEvent(Display *display, Window &win, Window &winRoot, int type, in
 }
 
 
+void writeSimbol(struttura *str,lbutton *listButton)
+{
+ time_t tnow;
+ double t_diff;
+ tnow=time(NULL);
+ t_diff=difftime(tnow,listButton->timeSelected);
+ listButton->timeSelected=tnow;
+ if(!((t_diff>=0)&&(t_diff<=1.5)))
+   str->indexSimbol=0;
+ else
+ {
+   str->indexSimbol=(str->indexSimbol==listButton->len-1)?0:str->indexSimbol+1;   
+   sendKey(str->display,str->win,str->winRoot,XK_BackSpace,0);
+   //g_print("%c",XK_BackSpace);
+ }
+ //g_print("%c",listButton->simbol[str->indexSimbol]);
+ sendKey(str->display,str->win,str->winRoot,listButton->simbol[str->indexSimbol],listButton->status);
+}
 
 //gtk_get_name_button(widget);
 void button_clicked(GtkWidget *widget,struttura *str)
 { 
  // Find the window which has the current keyboard focus.
  int revert;
+ int button;
+ button=atoi(gtk_widget_get_name(widget));
  XGetInputFocus(str->display, &str->win, &revert);
- listF_Buttons[atoi(gtk_widget_get_name(widget))](str);
+ if((button!=9)&&(button<10))//&!T9
+   writeSimbol(str,&str->listButton[button]);
+ else
+   listF_Buttons[button](str);
+
 }
 
-void setshift(GtkWidget *widget, gpointer data)
-{
- int modifier;
- 	if(modifier==1)
-		modifier=0;
-	else
-		modifier=1;
-}
 
 void finestra(struttura *str)
 {
@@ -223,7 +260,7 @@ void finestra(struttura *str)
  GtkWidget **buttonArray;
  
  int i, x, y;
- char s[12][7]={"1","2 abc","3 def","4 ghi","5 jkl","6 mno","7 pqrs","8 tuv","9 wxyz","*","0 +","#"};
+ char s[15][10]={"1","2 abc","3 def","4 ghi","5 jkl","6 mno","7 pqrs","8 tuv","9 wxyz","⇧ shift","0 ","alt gr","←","?","↵"}; 
  char s_i[2];
  gtk_init (NULL,NULL);
 
@@ -253,10 +290,7 @@ void finestra(struttura *str)
     gtk_table_attach_defaults(GTK_TABLE(table), buttonArray[i], x, x+1, y, y+1);
     sprintf(s_i,"%i",i);
     gtk_widget_set_name(buttonArray[i],s_i);
-    if(i==9)
-	g_signal_connect(G_OBJECT(buttonArray[i]), "clicked", G_CALLBACK(setshift), NULL);
-    else
-    	g_signal_connect(G_OBJECT(buttonArray[i]), "clicked", G_CALLBACK(button_clicked),str);
+    g_signal_connect(G_OBJECT(buttonArray[i]), "clicked", G_CALLBACK(button_clicked),str);
     x++;
     if(x==NUM_OF_COLUMNS)
     {
@@ -277,6 +311,7 @@ int *setListButton(int len,int status,int *vet,lbutton &l)
 {
  l.len=len;
  l.status=status;
+ l.timeSelected=(time_t)DBL_MAX;
  return vet;
 }
 
@@ -293,11 +328,6 @@ int main(int argc, char *argv[])
  struttura str;
  str.display = XOpenDisplay(0);
  int i;
- //int vetb1[LENB1]={XK_quotedbl,XK_comma,XK_plus,XK_minus,XK_less,XK_quoteright,XK_period};
- /*;\;,;+;-;<;';.;*/
- //int vetb10[LENB10]={XK_bar,XK_exclam,XK_2,XK_3,XK_dollar,XK_percent,XK_ampersand,XK_slash,XK_parenleft,XK_parenright,XK_equal,XK_question,XK_asciicircum,XK_asterisk,XK_greater,XK_semicolon,XK_colon,XK_underscore};
- /*,|,!,£,$,&,/,(,),=,?,^,*,>,;,:,_, */
- //int vetb5[LENB5]={XK_j,XK_k,XK_l,XK_5};                /* j,j,l,5 */
  int keycodemap[LENB*7+LENB1+LENB5+LENB10]={XK_1,XK_quotedbl,XK_comma,XK_plus,XK_minus,XK_less,XK_quoteright,XK_period,
                                           /*;1;\;,;+;-;<;';.;*/
                                           XK_a,XK_b,XK_c,XK_agrave,XK_2,/* a,b,c,à,2*/
@@ -308,27 +338,18 @@ int main(int argc, char *argv[])
                                           XK_p,XK_q,XK_r,XK_s,XK_7,     /* p,q,r,s,7*/
                                           XK_t,XK_u,XK_v,XK_ugrave,XK_8,/* t,u,v,ù,8*/
                                           XK_w,XK_x,XK_y,XK_z,XK_9,     /* w,x,y,z,9*/
-                                          XK_0,XK_bar,XK_exclam,XK_2,XK_3,XK_dollar,XK_percent,XK_ampersand,XK_slash,XK_parenleft,XK_parenright,XK_equal,XK_question,XK_asciicircum,XK_asterisk,XK_greater,XK_semicolon,XK_colon,XK_underscore
- /* ,0,|,!,£,$,&,/,(,),=,?,^,*,>,;,:,_, */
+                                          XK_space/* */,XK_0/*0*/,XK_question/*?*/,XK_exclam/*!*/,XK_equal/*=*/,XK_asterisk/* * */,XK_semicolon/*;*/,XK_colon/*:*/,XK_underscore/*_*/,XK_2/*"*/,XK_3/*£*/,XK_dollar/*$*/,XK_percent/*%*/,XK_ampersand/*&*/,XK_slash/*/*/,XK_bar/*|*/,XK_parenleft/*(*/,XK_parenright/*)*/,XK_asciicircum/*^*/,XK_greater/*>*/
                          };
  int sup; 
- //str.listButton[0].simbol=setListButton(LENB1,0,keycodemap,str.listButton[0]);  
+ str.indexSimbol=0;//semplice inizzializzazione
  str.listButton[0].simbol=setListButton(LENB1,0,keycodemap,str.listButton[0]);
- stampa(str.listButton[0].simbol,str.listButton[0].len);
- for(i=1,sup=LENB1;i<4;i++,sup+=LENB){
-  str.listButton[i].simbol=setListButton(LENB,str.listButton[i].status,keycodemap+sup,str.listButton[i]);
-  
-  stampa(str.listButton[i].simbol,str.listButton[i].len);
- }
+ for(i=1,sup=LENB1;i<4;i++,sup+=LENB)
+  str.listButton[i].simbol=setListButton(LENB,0,keycodemap+sup,str.listButton[i]);
  str.listButton[4].simbol=setListButton(LENB5,0,keycodemap+sup,str.listButton[4]);
- stampa(str.listButton[i].simbol,str.listButton[i].len);
- for(i++,sup+=LENB5;i<9;i++,sup+=LENB){
-  str.listButton[i].simbol=setListButton(LENB,str.listButton[i].status,keycodemap+sup,str.listButton[i]);
- stampa(str.listButton[i].simbol,str.listButton[i].len);
- }
+ for(i++,sup+=LENB5;i<9;i++,sup+=LENB)
+  str.listButton[i].simbol=setListButton(LENB,0,keycodemap+sup,str.listButton[i]);
  str.listButton[10].simbol=setListButton(LENB10,1,keycodemap+sup,str.listButton[10]);
- stampa(str.listButton[10].simbol,str.listButton[10].len);
-
+ 
  // Get the root window for the current display.
  str.winRoot = XDefaultRootWindow(str.display);
  finestra(&str); 
