@@ -9,16 +9,16 @@
 
 #define NUM_OF_COLUMNS 3
 #define NUM_OF_ROWS 4
-#define NUM_OF_BUTTONS 18
+#define NUM_OF_BUTTONS 15
 #define NameProgramm "virtualKey"
 #define LENB 5  /*LENB=LENB2,LENB3,LENB4,LENB6,LENB7,LENB8,LENB9*/
 #define LENB1 8
 #define LENB5 4
 #define LENB10 20
+#define N_SIMBOL_MODIFIER 128 /*numero di simboli a cui e' associato un modifier*/
 
 typedef struct Tlbutton{
  int len;
- int status;
  int *simbol;
  time_t timeSelected;
 }lbutton;
@@ -27,7 +27,7 @@ typedef struct tstruttura{
  Display *display;
  Window win;
  Window winRoot;
- int modifier;
+ int sibol_modifier[N_SIMBOL_MODIFIER];
  lbutton listButton[11];//listButton[9] non viene utilizza /viene posta a null per semplificazioni
  int indexSimbol;/*rappresenta l'indice del listButton(generico) corrispondente all'ultimo carattere stampato*/  
 }struttura;
@@ -45,27 +45,47 @@ void fButton7(struttura *str);
 void fButton8(struttura *str);
 void fButton9(struttura *str);
 void fButtonShift(struttura *str);
-void fButton0(struttura *str);
+void fButton11(struttura *str);
 void fButtonAltGR(struttura *str);
 void fButtonDelete(struttura *str);
 void fButtonSpace(struttura *str);
 void fButtonEnter(struttura *str);
-void fButtonTP(struttura *str);
-void fButtonTab(struttura *str);
-void fButtonIns(struttura *str);
-
-
-
 
 void sendKey(Display *display, Window &win, Window &winRoot,int keycode,int state);
 void SendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
 
 typedef void(*funz)(struttura *);
 Status sendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
-funz listF_Buttons[NUM_OF_BUTTONS]={fButton1,fButton2,fButton3,fButton4,fButton5,fButton6,fButton7,fButton8,fButton9,fButtonDelete,fButton0,fButtonEnter,fButtonShift,fButtonTab,fButtonAltGR,fButtonTP,fButtonSpace,fButtonIns};
+funz listF_Buttons[15]={fButton1,fButton2,fButton3,fButton4,fButton5,fButton6,fButton7,fButton8,fButton9,fButtonDelete,fButton11,fButtonEnter,fButtonShift,fButtonSpace,fButtonAltGR};
 
 //int mappaChar[10][15]={,'"','\','/','(',')','?','^','-','+','*','#',
 
+int  getModifier(int simbol,stuttura *str)
+/*utilizzo un po di memoria,spreco un po di memoria a vantaggio della velocità d'utilizzo*/
+
+/*Nota il modificatore poteva essere inserito direttamente nella struttura contenente la lista dei caratteri;
+ simbol diventava una struttura conposta da un carattere e da il corrippettivo modifier;
+ si e' preferita questa soluzione piu' lenta e che spreca maggior memoria(128 int a confronto si LENB1+LENB*7+LENB5+LENB10) per eventuali modifiche future: aquisizione semplice sola lista caratteri senza pensare al modificatore da  associare; ugualmente per il modificatore da associare al carattere se cambia uno stantard o altro,basta cambiare
+ la lista dei modificatori associati al carattere (si parla della lista/vettore str.simbol_mofidier),
+ in futuro è pensabile che entrambi possano essere caricati da un file di configurazione*/ 
+    
+/*per evitare un blocco del programma anche se simbol non e' un valore consentito(non e' un valore 
+ appartenente alla nosta lista di modificatori associati al carattere),viene restituito 0(no modificatore),
+ in caso diverso viene restituito il modificatore associato*/
+{                     
+ return ((simbol>=0)&&(simbol>=127))?str->simbol_modifier[simbol]:0;
+}
+
+
+void setModifiers(struttura *str)
+{
+ /*Questa funzione setta la i modificatori associati airispettivi caratteri*/
+ /* 0= no modificatore*/   
+ int i;
+ /*si può pensare che questo vettore venga caricato da file*/ 
+  /* !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~;*/
+ int listmodifier[N_SIMBOL_MODIFIER]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,XK_ISO_Level5_Shift,XK_ISO_Level5_Shift,XK_Control_R,XK_ISO_Level5_Shift,XK_ISO_Level5_Shift,XK_ISO_Level5_Shift,XK_ISO_Level5_Shift,XK_ISO_Level5_Shift,XK_ISO_Level5_Shift,0,0,0,0/*bisogna cont da /012334*/ 
+}
 void fButton1(struttura *str)
 /*Funzione associata al tasto 1*/
 {
@@ -145,7 +165,7 @@ void fButtonShift(struttura *str)
  str->modifier=(str->modifier!=XK_ISO_Level5_Shift)?XK_ISO_Level5_Shift:0;  
 }
 
-void fButton0(struttura *str)
+void fButton11(struttura *str)
 /*Funzione associata al tasto 0 */
 {
  int keycode=XK_0;
@@ -174,21 +194,8 @@ void fButtonEnter(struttura *str)
 {
   sendKey(str->display,str->win,str->winRoot,XK_KP_Enter,0);
 }
-void fButtonTab(struttura *str)
-/*Funzione associata al tasto tab */
-{
-  sendKey(str->display,str->win,str->winRoot,XK_Tab,0);
-}
-void fButtonTP(struttura *str)
-/*Funzione associata al tasto TP */
-{
-  sendKey(str->display,str->win,str->winRoot,XK_Tab,0);
-}
-void fButtonIns(struttura *str)
-/*Funzione associata al tasto inseriemento nuova parola */
-{
-  sendKey(str->display,str->win,str->winRoot,XK_Tab,0);
-}
+
+
 /*funzione che notifica pressione e rilascio si un dato tasto ad un'applicazione*/
 void sendKey(Display *display, Window &win, Window &winRoot,int keycode,int state)
 {
@@ -274,7 +281,7 @@ void finestra(struttura *str)
  GtkWidget **buttonArray;
  
  int i, x, y;
- char s[NUM_OF_BUTTONS][10]={"1","2 abc","3 def","4 ghi","5 jkl","6 mno","7 pqrs","8 tuv","9 wxyz","←","0 ","↵","⇧ shift","tab","alt gr","tp","space","ins"}; 
+ char s[15][10]={"1","2 abc","3 def","4 ghi","5 jkl","6 mno","7 pqrs","8 tuv","9 wxyz","←","0 ","↵","⇧ shift","space","alt gr"}; 
  char s_i[3];
  gtk_init (NULL,NULL);
 
@@ -364,7 +371,7 @@ int main(int argc, char *argv[])
  for(i++,sup+=LENB5;i<9;i++,sup+=LENB)
   str.listButton[i].simbol=setListButton(LENB,0,keycodemap+sup,str.listButton[i]);
  str.listButton[9].simbol=NULL;
- str.listButton[10].simbol=setListButton(LENB10,1,keycodemap+sup,str.listButton[10]);
+ str.listButton[10].simbol=setListButton(LENB10,0,keycodemap+sup,str.listButton[10]);
  
  // Get the root window for the current display.
  str.winRoot = XDefaultRootWindow(str.display);
