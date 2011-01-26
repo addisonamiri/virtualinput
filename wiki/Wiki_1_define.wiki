@@ -1,4 +1,4 @@
-'NUM_OF_COLUMNS           number columns of buttons'
+<h>NUM_OF_COLUMNS<\h>           <h>number columns of buttons<\h><br>
 'NUM_OF_ROWS              number rows of buttons'
 NUM_OF_BUTTONS           the total number of buttons 
 NameProgramm             the name of the program
