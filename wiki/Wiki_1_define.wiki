@@ -1,5 +1,5 @@
-NUM_OF_COLUMNS           number columns of buttons
-NUM_OF_ROWS              number rows of buttons
+'NUM_OF_COLUMNS           number columns of buttons'
+'NUM_OF_ROWS              number rows of buttons'
 NUM_OF_BUTTONS           the total number of buttons 
 NameProgramm             the name of the program
 LENB                     the number of symbols in the buttons 2,3,4,5,6,7,8,9 
