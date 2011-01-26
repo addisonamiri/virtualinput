@@ -5,7 +5,7 @@ void gestionet9 (struttura *str,int tasto);
 The parameters of this function are:
   str = the pointer of the general structure struttura(see global_structures page);
   tasto = is a integer,and rappresent the number show on the label of button pressed(only 0-9);
-Dont'''return values;
+Do not return values;
 This function was copied on free project http://code.google.com/p/lit9/;
 just simply modify for for l' adaptation on this project
 
@@ -14,7 +14,7 @@ The parameters of this function are:
    gtklist = the pointer GtkWidget,that rappresent the list of word shows
              when TP in actived;
    str = the pointer of the general structure struttura(see global_structures page);
-Dont''return values;
+Do not return values;
 This function was copied on free project http://code.google.com/p/lit9/;
 just simply modify for for l' adaptation on this project
 
@@ -23,7 +23,7 @@ The parameters of this function are:
    str = the pointer of the general structure struttura(see global_structures page);
    keycode = is an integer that rappresent, a codify of specific 
              character ,that would be send on the focus; 
-Dont'return values;
+Do not return values;
 The only rule of this function is invoke the other function sendkey(),
 it was introducted for compability with sigh_print_selection; 
 
@@ -31,53 +31,53 @@ it was introducted for compability with sigh_print_selection;
 void fButtonShift(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function change the modifier,if modifier is not equals at XK_ISO_Level5_Shift set it also set NULL;
 
 void fButtonAltGR(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function change the modifier,if modifier is not equals at XK_Control_R set it also set NULL;
 
 void fButtonDelete(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function send XK_BackSpace on the focus(delete one character),
 and decrement the index of position that new word saved.
 
 void fButtonSpace(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function send XK_Space on the focus(the space),
 and and set at init position the index of new word.
 
 void fButtonEnter(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function send XK_KP_Enter on the focus(the enter),
 and and set at init position the index of new word.
 
 void fButtonTab(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function send XK_Tab on the focus(the tab),
 and and set at init position the index of new word.
 
 void fButtonTP(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function active/disactive the predictionary text
 
 void fButtonIns(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function active the rule for insert one new entry in the 
 database.
 
@@ -87,19 +87,19 @@ database.
 void movetodown(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function move the main window down in 3 potition,if the window are at the end of the screen move the window at the begin of the screen;
 
 void movetoright(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function move the main window right in 3 potition,if the window are at the end of the screen move the window at the begin of the screen;
 
 void getMaxScreen(struttura *str);
 The parameters of this function is:
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Do not return values;
 This function copy in local variable the size of the window,and it calculate vertical and orizzontal delay for move the window.
 
 
