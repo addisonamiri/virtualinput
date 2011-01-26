@@ -1,4 +1,4 @@
-#define NUM_OF_COLUMNS 3                    /* number columns of buttons*/ 
+{{{NUM_OF_COLUMNS 3                    /* number columns of buttons*/ 
 #define NUM_OF_ROWS 7                       /* number rows of buttons*/
 {{{#define NUM_OF_BUTTONS 21                   /*the total number of buttons*/ 
 #define NameProgramm "virtualinput"         /*the name of the program */
