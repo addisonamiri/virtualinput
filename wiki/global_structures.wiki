@@ -27,7 +27,7 @@ typedef struct Tlbutton{
 typedef struct tinsert{
  int on;//mode on
  int index;
- char key_numbers[LEN_WORD_DB+1];//TP code associated to word
+ char key_numbers[LEN_WORD_DB+1];//PT code associated to word
  char new_word[LEN_WORD_DB+1];
 }tins;
 
