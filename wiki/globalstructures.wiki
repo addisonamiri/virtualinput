@@ -2,15 +2,14 @@ The following code shows the main elements used by the functions:
 {{{
 /*Structure containing all gtk widgets and variables used to PT management*/
 typedef struct text_prediction{
-//Nuovi elementi per la lista t9
 GtkWidget *gtklist;
 GtkWidget *list_item, *scrolled_window;
-int statot9;
+int statot9;//status of TP mode
 int indice;
 char codicet9[LEN_WORD_DB+1];
 int luncodicet9;
 int flagcaricat9;
-int numparoletrovate;	//numero parole trovate dalla predizione del t9
+int numparoletrovate;// number of words returned by database query 
 struct nodo vetparole[N];
 sqlite3 *db;
 sqlite3_stmt *stmt;
