@@ -1,3 +1,4 @@
+The following code shows the main elements used by the functions:
 {{{
 /*Structure containing all gtk widgets and variables used to PT management*/
 typedef struct text_prediction{
