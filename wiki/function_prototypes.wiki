@@ -14,7 +14,7 @@ The parameters of this function are:
    gtklist = the pointer GtkWidget,that rappresent the list of word shows
              when TP in actived;
    str = the pointer of the general structure struttura(see global_structures page);
-Dont'return values;
+Dont''return values;
 This function was copied on free project http://code.google.com/p/lit9/;
 just simply modify for for l' adaptation on this project
 
