@@ -2,8 +2,7 @@ We report the function prototypes as follows:
 {{{
 //functions called when VirtualInput software is in PT (Predictive Text) mode
 void gestionet9 (struttura *str,int tasto);
-The parameters of this function are:
-  *str = the pointer of the general structure struttura;
+//*str is a pointer of the general structure struttura;
 
 void sigh_print_selection(GtkWidget *gtklist,struttura *str);
 void sendtofocus(struttura *str,int keycode);
