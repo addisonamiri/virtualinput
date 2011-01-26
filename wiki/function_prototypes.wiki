@@ -7,7 +7,7 @@ The parameters of this function are:
   tasto = is a integer,and rappresent the number show on the label of button pressed(only 0-9);
 Do not return values;
 This function was copied on free project http://code.google.com/p/lit9/;
-just simply modify for for l' adaptation on this project
+just simply modify for adaptation on this project
 
 void sigh_print_selection(GtkWidget *gtklist,struttura *str);
 The parameters of this function are:
@@ -16,7 +16,7 @@ The parameters of this function are:
    str = the pointer of the general structure struttura(see global_structures page);
 Do not return values;
 This function was copied on free project http://code.google.com/p/lit9/;
-just simply modify for for l' adaptation on this project
+just simply modify for adaptation on this project
 
 void sendtofocus(struttura *str,int keycode);
 The parameters of this function are:
