@@ -1,4 +1,4 @@
-WWe report the function prototypes as follows:
+We report the function prototypes as follows:
 {{{
 //functions called when VirtualInput software is in PT (Predictive Text) mode
 void gestionet9 (struttura *str,int tasto);
