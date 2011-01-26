@@ -4,14 +4,14 @@ We report the function prototypes as follows:
 void gestionet9 (struttura *str,int tasto);
 /*str is a pointer of the general structure struttura(see global_structures page);
   tasto is a integer,and rappresents the number expressed on the label of button pressed(only 0-9);
-This function is copied on free project http://code.google.com/p/lit9/;
-it is just simply modified for adaptation on this project*/
+This function is copied from free project http://code.google.com/p/lit9/;
+it is just modified for adaptation on this project*/
 
 void sigh_print_selection(GtkWidget *gtklist,struttura *str);
 /*gtklist is a pointer to GtkWidget,that rappresents list of word
    str is a pointer to the general structure struttura(see global_structures page);
-This function is copied on free project http://code.google.com/p/lit9/;
-it is just simply modified for adaptation on this project*/
+This function is copied from free project http://code.google.com/p/lit9/;
+it is just modified for adaptation on this project*/
 
 void sendtofocus(struttura *str,int keycode);
 /*str is a pointer to the general structure struttura(see global_structures page);
