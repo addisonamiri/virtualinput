@@ -11,22 +11,26 @@
 #include <sqlite3.h>
 #include <string.h>//for bzero
 
-#define NUM_OF_COLUMNS 3
-#define NUM_OF_ROWS 4
-#define NUM_OF_BUTTONS 21
-#define NameProgramm "virtualKey"
-#define LENB 5  /*LENB=LENB2=LENB3=LENB4=LENB6=LENB7=LENB8=LENB9*/
-#define LENB1 8
-#define LENB5 4
-#define LENB0 19
-#define N_SIMBOL_MODIFIER 128 /*numero di simboli a cui e' associato un modifier*/
-#define WINDOW_WIDTH 200
-#define WINDOW_HEIGHT 380
-#define S_W_MAIN 30 //il valore di scrolled window quando il tp è disabilitato
+#define NUM_OF_COLUMNS 3                    /* number columns of buttons*/ 
+#define NUM_OF_ROWS 7                       /* number rows of buttons*/
+#define NUM_OF_BUTTONS 21                   /*the total number of buttons*/ 
+#define NameProgramm "virtualinput"         /*the name of the program */
+#define LENB 5                              /*the number of symbols in the buttons 2,3,4,5,6,7,8,9*/ 
+                                            /*LENB=LENB2=LENB3=LENB4=LENB6=LENB7=LENB8=LENB9*/
+#define LENB1 8                             /*the number of symbols in the button 1*/
+#define LENB5 4                             /*the number of symbols in the button 5*/
+#define LENB0 19                            /*the number of symbols in the button 0*/
+#define WINDOW_WIDTH 200                    /*width of main window*/
+#define WINDOW_HEIGHT 380                   /*heigth of main window*/
+#define S_W_MAIN 30                         /*heigth of scrolled_window in TP off*/  
+                                            //il valore di scrolled window quando il tp è disabilitato
 
-#define LEN_WORD_DB 20
-#define N 5
-#define list_item_data_key "list_item_data"
+#define LEN_WORD_DB 20                      /* len of words saved on database */
+#define N 5                                 /* number of element showed in the list of word predected*/
+
+#define list_item_data_key "list_item_data" /*key for identicitazion list item insert*/ 
+
+
 struct nodo {
   int frequenza;
   char parola[LEN_WORD_DB+1];
@@ -94,7 +98,7 @@ typedef struct tstruttura{
 
 
 
-
+void finestra(struttura *str);
 
 
 
@@ -115,24 +119,35 @@ void fButtonIns(struttura *str);
 
 
 
-void movetoup(struttura *str);
+void movetodown(struttura *str);
 void movetoright(struttura *str);
 void dockicon(struttura *str);
 void tray_icon_on_click(GtkStatusIcon *status_icon,struttura *str);
 void getMaxScreen(struttura *str);
+void setMove(struttura *str);
 
 void sendKey(Display *display, Window &win, Window &winRoot,int keycode,int state);
 void SendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
+Status sendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
 
 void ins(struttura *str);
 void updatedictionary(struttura *str);
 void window_insert(struttura *str);
+void button_pressed_insert(GtkWidget *widget,struttura *str);
 
 void writeSimbol(struttura *str,lbutton *listSibolOnButton,int number);
+int *setListButton(int len,int *vet,lbutton &l,int status);
+
+void setModifier(struttura *str,int modifier,const gchar *s_label);
+void printOnFocus(struttura *str,int key,int modifier);
+
+void *thfilet9 (void *arg);
+
+
 
 typedef void(*funz)(struttura *);
-Status sendKeyEvent(Display *display, Window &win, Window &winRoot, int type, int keycode, int modifiers);
-funz listF_Buttons[NUM_OF_BUTTONS-10]={fButtonShift,fButtonAltGR,fButtonDelete,fButtonSpace,fButtonEnter,fButtonTP,fButtonTab,fButtonIns,movetoright,movetoup,dockicon};
+
+funz listF_Buttons[NUM_OF_BUTTONS-10]={fButtonShift,fButtonAltGR,fButtonDelete,fButtonSpace,fButtonEnter,fButtonTP,fButtonTab,fButtonIns,movetoright,movetodown,dockicon};
 
 void setModifier(struttura *str,int modifier,const gchar *s_label)
 {
@@ -184,7 +199,6 @@ printOnFocus(str,XK_space,0);
 str->ins.index=-1;
 }   
 void fButtonIns(struttura *str)
-/*Funzione associata al tasto '*' */
 { 
    str->ins.index++;
    str->ins.key_numbers[str->ins.index]=str->ins.new_word[str->ins.index]=0;
@@ -235,7 +249,7 @@ void setMove(struttura *str)
 
 
 
-void movetoup(struttura *str)
+void movetodown(struttura *str)
 { //se (str->move.position_height==str->move.delay_verticale*2) è verificato =0 altrimenti + delay_verticale
   //delay verticale è lo spostamento verticale
   str->move.position_height=(str->move.position_height==str->move.delay_verticale*2)?0:str->move.position_height+str->move.delay_verticale;
@@ -526,7 +540,7 @@ void finestra(struttura *str)
  str->tray_icon = gtk_status_icon_new();
  g_signal_connect(G_OBJECT(str->tray_icon), "activate",G_CALLBACK(tray_icon_on_click), str);
  gtk_status_icon_set_from_icon_name(str->tray_icon,GTK_STOCK_MEDIA_STOP);
- gtk_status_icon_set_from_file(str->tray_icon,"keyboard_icon.gif");
+ gtk_status_icon_set_from_file(str->tray_icon,"/usr/share/virtualinput/keyboard_icon.gif");
  gtk_status_icon_set_tooltip(str->tray_icon,"Keyboard Tray Icon");
  gtk_status_icon_set_visible(str->tray_icon, FALSE);
 
@@ -703,7 +717,7 @@ void *thfilet9 (void *arg)
 {
 	int rc;
 	struttura *str=(struttura *)arg;
-        rc = sqlite3_open("parole.sqlite", &str->tp.db);
+        rc = sqlite3_open("/usr/share/virtualinput/parole.sqlite", &str->tp.db);
         if (rc)
  	{
  	       printf("\nerrore database del T9");
@@ -711,7 +725,7 @@ void *thfilet9 (void *arg)
         }
         else
 	{
-		printf("\nConnessione al database del T9 avvenuta correttamente\n");
+		//printf("\nConnessione al database del T9 avvenuta correttamente\n");
 		str->tp.flagcaricat9=1;
 	}	
 	fflush(stdout);	
