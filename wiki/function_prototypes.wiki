@@ -43,7 +43,11 @@ This function displaces the main window down in 3 position,if the window is in t
 
 void movetoright(struttura *str);
 /*str is a pointer to the general structure struttura(see global_structures page);
-This function displaces the main window right in 3 position,if the window is in the end of the screen, move it in the starting point of screen;*/
+This function displaces the main window right in 3 position;*/
+
+void movetoleft(struttura *str);
+/*str is a pointer to the general structure struttura(see global_structures page);
+This function displaces the main window right in 3 position;*/
 
 void getMaxScreen(struttura *str);
 /*str is a pointer of the general structure struttura(see global_structures page);
