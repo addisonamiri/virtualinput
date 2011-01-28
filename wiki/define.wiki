@@ -1,8 +1,8 @@
 The following code shows the constant element used by the program
 {{{
 #define NUM_OF_COLUMNS  3                 /* number columns of buttons*/ 
-#define NUM_OF_ROWS 7                       /* number rows of buttons*/
-#define NUM_OF_BUTTONS 21                   /*the total number of buttons*/ 
+#define NUM_OF_ROWS 8                       /* number rows of buttons*/
+#define NUM_OF_BUTTONS 24                   /*the total number of buttons*/ 
 #define NameProgramm "virtualinput"         /*the name of the program */
 #define LENB 5                              /*the number of symbols in the buttons 2,3,4,5,6,7,8,9*/ 
                                             
@@ -18,4 +18,7 @@ The following code shows the constant element used by the program
 #define N 5                                 /* number of element showed in the list of predictive word */
 
 #define list_item_data_key "list_item_data" /*key for identification list item insert*/ 
+
+#define PATH_DB "/usr/share/virtualinput/virtualinput-0.1beta/parole.sqlite"
+#define PATH_IMG "/usr/share/virtualinput/virtualinput-0.1beta/keyboard_icon.gif"
 }}}
