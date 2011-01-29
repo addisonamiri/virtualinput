@@ -42,7 +42,7 @@ typedef struct tstruttura{
  Window win;
  Window winRoot;
  int modifier;
- int specialKey;//defined only on unstable version
+ int specialKey;/*****defined only on unstable version 0.1.2 in order to controll the simulation of more features about Alt and Ctrl buttons*****/
  lbutton listButton[10];
  int indexSimbol;/*index of last printed character from a particular button*/  
  T_tp tp;
