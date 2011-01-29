@@ -39,21 +39,21 @@ void fButtonIns(struttura *str);
 //methods dedicated to usability
 void movetodown(struttura *str);
 /*str is a pointer to the general structure struttura(see global_structures page);
-This function displaces the main window down in 3 position,if the window is in the end of the screen, move it in the starting point of screen;*/
+This function displaces the main window down in 3 positions,if the window is in the end of the screen, move it in the starting point of screen;*/
 
 void movetoright(struttura *str);
 /*str is a pointer to the general structure struttura(see global_structures page);
-This function displaces the main window right in 3 position;*/
+This function displaces the main window to the right in 3 positions;*/
 
 void movetoleft(struttura *str);
 /*str is a pointer to the general structure struttura(see global_structures page);
-This function displaces the main window right in 3 position;*/
+This function displaces the main window to the left in 3 positions;*/
 
 void getMaxScreen(struttura *str);
 /*str is a pointer of the general structure struttura(see global_structures page);
 This function calculates vertical and orizzontal delay for moving main window.*/
 
-
+//functions used to manage icon minimization
 void dockicon(struttura *str);
 void tray_icon_on_click(GtkStatusIcon *status_icon,struttura *str);
 
