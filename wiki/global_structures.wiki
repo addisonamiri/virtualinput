@@ -42,7 +42,7 @@ typedef struct tstruttura{
  Window win;
  Window winRoot;
  int modifier;
- int specialKey;//defined only unstable version
+ int specialKey;//defined only on unstable version
  lbutton listButton[10];
  int indexSimbol;/*index of last printed character from a particular button*/  
  T_tp tp;
