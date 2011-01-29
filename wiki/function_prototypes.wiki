@@ -30,8 +30,13 @@ void fButtonDelete(struttura *str);
 void fButtonSpace(struttura *str);
 void fButtonEnter(struttura *str);
 void fButtonTab(struttura *str);
-void fButtonTP(struttura *str);
+
+/*****Alt and Ctrl Buttons are used into unstable version 0.1.2 where they should have more features about real Alt and Ctrl of keyboard*****/
+void fButtonAlt(struttura *str);
+void fButtonCtrl(struttura *str);
+
 /*This function ables or disables the predictive text mode*/
+void fButtonTP(struttura *str);
 
 void fButtonIns(struttura *str);
 /*This function inserts a new entry in the database.*/
@@ -45,7 +50,7 @@ void movetoright(struttura *str);
 /*str is a pointer to the general structure struttura(see global_structures page);
 This function displaces the main window to the right in 3 positions;*/
 
-void movetoleft(struttura *str);//defined only unstable version
+void movetoleft(struttura *str);/*****defined only on unstable version 0.1.2*****/
 /*str is a pointer to the general structure struttura(see global_structures page);
 This function displaces the main window to the left in 3 positions;*/
 
