@@ -45,7 +45,7 @@ void movetoright(struttura *str);
 /*str is a pointer to the general structure struttura(see global_structures page);
 This function displaces the main window to the right in 3 positions;*/
 
-void movetoleft(struttura *str);
+void movetoleft(struttura *str);//defined only unstable version
 /*str is a pointer to the general structure struttura(see global_structures page);
 This function displaces the main window to the left in 3 positions;*/
 
